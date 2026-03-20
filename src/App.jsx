@@ -671,7 +671,7 @@ export default function App() {
   const [page, setPage] = useState("dashboard");
   const [sb, setSb] = useState(true);
   const [dark, setDark] = useState(true);
-  const [gemKey, setGemKey] = useState("");
+  const [gemKey, setGemKey] = useState(() => { try { return window.localStorage.getItem("gemKey") || ""; } catch { return ""; } });
   const [agBrands, setAgBrands] = useState(AGENCY_BRANDS);
   const [clBrands, setClBrands] = useState([]);
 
@@ -680,6 +680,7 @@ export default function App() {
   const brands = isAdmin ? agBrands : clBrands;
   const setBrands = isAdmin ? setAgBrands : setClBrands;
 
+  const saveGemKey = (k) => { setGemKey(k); try { window.localStorage.setItem("gemKey", k); } catch {} };
   const onAuth = (u) => { setUser(u); setView("app"); setPage("dashboard"); };
   const logout = () => { setUser(null); setView("landing"); setPage("dashboard"); setAuthMode("login"); };
 
@@ -690,7 +691,7 @@ export default function App() {
   if (view === "landing") return <ThemeCtx.Provider value={th}><Landing onLogin={() => { setAuthMode("login"); setView("auth"); }} onRegister={(plan) => { setSelPlan(plan || null); setAuthMode("register"); setView("auth"); }} dark={dark} setDark={setDark}/></ThemeCtx.Provider>;
   if (view === "auth") return <ThemeCtx.Provider value={th}><Auth mode={authMode} setMode={setAuthMode} onAuth={onAuth} dark={dark} setDark={setDark} selPlan={selPlan}/></ThemeCtx.Provider>;
 
-  const agPages = { dashboard: <AgencyDash setPage={setPage} brands={brands}/>, factory: <Factory brands={brands} gemKey={gemKey}/>, branding: <BrandKit brands={brands} setBrands={setBrands}/>, clients: <AgencyClients/>, plans: <AgencyPlans/>, team: <AgencyTeam/>, settings: <AgencySettings gemKey={gemKey} setGemKey={setGemKey}/> };
+  const agPages = { dashboard: <AgencyDash setPage={setPage} brands={brands}/>, factory: <Factory brands={brands} gemKey={gemKey}/>, branding: <BrandKit brands={brands} setBrands={setBrands}/>, clients: <AgencyClients/>, plans: <AgencyPlans/>, team: <AgencyTeam/>, settings: <AgencySettings gemKey={gemKey} setGemKey={saveGemKey}/> };
   const clPages = { dashboard: (() => { const t = th; return <Section title="Mi Dashboard" right={<Badge color="#37c2eb">Cliente</Badge>}><div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14, marginBottom: 24 }}>{[{ l: "Marcas", v: String(brands.length), c: "#06b6d4" }, { l: "Contenido", v: brands.length ? "34" : "0", c: "#37c2eb" }, { l: "Posts/mes", v: brands.length ? "12" : "0", c: "#8b5cf6" }].map((s, i) => <Card key={i}><div style={{ fontSize: 12, color: t.txM, marginBottom: 8 }}>{s.l}</div><div style={{ fontSize: 28, fontWeight: 800, color: s.c }}>{s.v}</div></Card>)}</div>{brands.length ? <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>{brands.map(b => <Card key={b.id} onClick={() => setPage("factory")} style={{ display: "flex", alignItems: "center", gap: 12 }}><div style={{ width: 40, height: 40, borderRadius: 10, background: b.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{b.emoji}</div><div style={{ flex: 1 }}><div style={{ fontSize: 14, fontWeight: 600, color: t.tx }}>{b.name}</div><div style={{ fontSize: 11, color: t.txM }}>{b.industry}</div></div><Badge>Activa</Badge></Card>)}<Card onClick={() => setPage("branding")} style={{ display: "flex", alignItems: "center", justifyContent: "center", border: `2px dashed ${t.brd}`, minHeight: 70 }}><div style={{ textAlign: "center", color: t.txM }}><div style={{ fontSize: 24 }}>+</div><div style={{ fontSize: 12 }}>Nueva marca</div></div></Card></div> : <Card style={{ textAlign: "center", padding: 48 }}><div style={{ fontSize: 48, marginBottom: 12 }}>🚀</div><div style={{ fontSize: 18, fontWeight: 700, color: t.tx, marginBottom: 8 }}>¡Bienvenido!</div><div style={{ fontSize: 14, color: t.txM, marginBottom: 20 }}>Crea tu primera marca para empezar.</div><Btn primary onClick={() => setPage("branding")} style={{ margin: "0 auto" }}><Ic name="plus" size={14}/> Crear marca</Btn></Card>}</Section>; })(), factory: <Factory brands={brands} gemKey={gemKey}/>, branding: <BrandKit brands={brands} setBrands={setBrands}/>, settings: <ClientSettings user={user} setUser={setUser}/> };
   const pages = isAdmin ? agPages : clPages;
 
