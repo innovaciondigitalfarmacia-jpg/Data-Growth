@@ -630,7 +630,8 @@ const Factory = ({ brands, gemKey }) => {
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </Section>
   );
-}) => {
+} 
+ {
   const t = useT();
   const [brand, setBrand] = useState(brands[0]);
   const [ct, setCt] = useState(CTYPES[0]);
@@ -675,7 +676,8 @@ const Factory = ({ brands, gemKey }) => {
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </Section>
   );
-}) => {
+} 
+ {
   const t = useT();
   const [brand, setBrand] = useState(brands[0]);
   const [ct, setCt] = useState(CTYPES[0]);
