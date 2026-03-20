@@ -585,7 +585,7 @@ const BrandKit = ({ brands, setBrands }) => {
 };
 
 // ══════ FACTORY ══════
-const Factory = ({ brands }) => {
+const Factory = ({ brands, gemKey }) => {
   const t = useT();
   const [brand, setBrand] = useState(brands[0]);
   const [ct, setCt] = useState(CTYPES[0]);
